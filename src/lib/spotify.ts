@@ -1,9 +1,11 @@
+import { cookies } from "next/headers";
 import { z } from "zod";
 
 /**
  * Requests a fresh acccess token for the Spotify API (valid for 1 hour)
  */
 export async function getAccessToken(): Promise<string> {
+  cookies();
   const tokenSchema = z.object({
     access_token: z.string(),
     token_type: z.literal("Bearer"),
