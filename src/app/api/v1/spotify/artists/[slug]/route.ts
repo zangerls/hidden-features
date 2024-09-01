@@ -1,5 +1,5 @@
 import { getAccessToken } from "@/lib/spotify";
-import { artistSchema, artistsDataSchema } from "@/schemas/spotify";
+import { artistsDataSchema } from "@/schemas/spotify";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -27,7 +27,10 @@ export async function GET(
     }
 
     const accessToken = await getAccessToken();
-    const url = `${process.env.SPOTIFY_BASE_URL}/search?q=${searchParams.data.slug}&type=artist&limit=20&offset=0`;
+    const url = encodeURI(
+      `${process.env.SPOTIFY_BASE_URL}/search?q=${searchParams.data.slug}&type=artist&limit=20&offset=0`,
+    );
+    console.log(url);
     const res = await fetch(url, {
       method: "GET",
       headers: {
@@ -39,7 +42,9 @@ export async function GET(
       return res;
     }
 
+    console.log("HERE");
     const data = await res.json();
+    console.log(data);
     const artists = artistsDataSchema.parse(data);
 
     return NextResponse.json(artists);

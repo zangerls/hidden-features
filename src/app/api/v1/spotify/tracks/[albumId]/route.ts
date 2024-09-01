@@ -1,8 +1,11 @@
 import { getAccessToken } from "@/lib/spotify";
 import { tracksDataSchema } from "@/schemas/spotify";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { albumId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { albumId: string } },
+) {
   try {
     const accessToken = await getAccessToken();
     const url = `${process.env.SPOTIFY_BASE_URL}/albums/${params.albumId}/tracks?limit=50`;

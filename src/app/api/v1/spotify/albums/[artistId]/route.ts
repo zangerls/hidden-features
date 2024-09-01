@@ -1,10 +1,13 @@
 import { getAccessToken } from "@/lib/spotify";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET({ params }: { params: { artistId: string } }) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { artistId: string } },
+) {
   try {
     const accessToken = await getAccessToken();
-    const url = `${process.env.SPOTIFY_BASE_URL}/artists/${params.artistId}/albums?include_groups=album&limit=50`;
+    const url = `${process.env.SPOTIFY_BASE_URL}/artists/${params.artistId}/albums?include_groups=album,appears_on,single&limit=50`;
     const res = await fetch(url, {
       method: "GET",
       headers: {
