@@ -75,11 +75,11 @@ export default function Album({
             <p className="font-semibold">{name}</p>
             <div className="flex justify-center gap-2 text-sm mt-1">
               <p>{`Release: ${release_date.slice(0, 4)}`}</p>
-              <Separator orientation="vertical" />
+              <Separator className="bg-white" orientation="vertical" />
               <p>{`Tracks: ${total_tracks}`}</p>
               {seenAlbums.map((seen) => seen.id).includes(id) && (
                 <>
-                  <Separator orientation="vertical" />
+                  <Separator className="bg-white" orientation="vertical" />
                   <Badge className="bg-zinc-200 text-black hover:bg-zinc-200 hover:text-black">
                     Tried
                   </Badge>
