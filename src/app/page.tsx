@@ -23,8 +23,27 @@ export default function Home() {
       <ArtistFinder
         artistID={initialArtistID}
         setArtistID={setInitialArtistID}
+        input={{
+          label: "Artist (Starting point)",
+          placeholder: "Search for an artist",
+        }}
+        select={{
+          label: "Artist (Starting point)",
+          placeholder: "Select an artist",
+        }}
       />
-      <ArtistFinder artistID={finalArtistID} setArtistID={setFinalArtistID} />
+      <ArtistFinder
+        artistID={finalArtistID}
+        setArtistID={setFinalArtistID}
+        input={{
+          label: "Artist (Goal)",
+          placeholder: "Search for an artist",
+        }}
+        select={{
+          label: "Artist (Goal)",
+          placeholder: "Select an artist",
+        }}
+      />
       <Button
         disabled={!(initialArtistID && finalArtistID)}
         aria-disabled={!(initialArtistID && finalArtistID)}

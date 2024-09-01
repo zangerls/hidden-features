@@ -5,6 +5,7 @@ import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -17,9 +18,22 @@ import {
 interface ArtistFinder {
   artistID: string | undefined;
   setArtistID: Dispatch<SetStateAction<string | undefined>>;
+  input?: {
+    label?: string;
+    placeholder?: string;
+  };
+  select?: {
+    label?: string;
+    placeholder?: string;
+  };
 }
 
-export default function ArtistFinder({ artistID, setArtistID }: ArtistFinder) {
+export default function ArtistFinder({
+  artistID,
+  setArtistID,
+  input,
+  select,
+}: ArtistFinder) {
   const [artistInput, setArtistInput] = useState<string>("");
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,24 +64,32 @@ export default function ArtistFinder({ artistID, setArtistID }: ArtistFinder) {
 
   return (
     <>
-      <Input
-        value={artistInput}
-        onChange={(e) => setArtistInput(e.currentTarget.value)}
-      />
-      <Button
-        disabled={!artistInput}
-        aria-disabled={!artistInput}
-        onClick={handleSearch}
-      >
-        Search
-      </Button>
+      <div className="grid w-full max-w-sm items-center gap-1.5">
+        {input?.label && <Label>{input.label}</Label>}
+        <div className="flex w-full max-w-sm items-center space-x-2">
+          <Input
+            value={artistInput}
+            onChange={(e) => setArtistInput(e.currentTarget.value)}
+            placeholder={input?.placeholder}
+          />
+          <Button
+            disabled={!artistInput}
+            aria-disabled={!artistInput}
+            onClick={handleSearch}
+          >
+            Search
+          </Button>
+        </div>
+      </div>
+
+      {select?.label && <Label>{select.label}</Label>}
       <Select
         value={artistID}
         disabled={!artists.length}
         onValueChange={(val) => setArtistID(val)}
       >
         <SelectTrigger>
-          <SelectValue placeholder="Select an artist" />
+          <SelectValue placeholder={select?.placeholder} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
