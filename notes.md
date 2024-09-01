@@ -1,0 +1,3 @@
+- hidden features (Astroworld, ...)
+- artists without features - stuck indefinitely
+- URI encoding and decoding
