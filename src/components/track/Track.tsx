@@ -5,13 +5,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { GameContext } from "@/hooks/GameContext";
 import { artistsDataSchema } from "@/schemas/spotify";
 import { Artist, Track as TrackType } from "@/types/spotify";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { AspectRatio } from "../ui/aspect-ratio";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 type TrackProps = TrackType & {
   currentArtistId: string;
@@ -30,6 +32,7 @@ export default function Track({
   setCurrentArtistId,
   closeSheet,
 }: TrackProps) {
+  const { seenArtists, setSeenArtists } = useContext(GameContext);
   const [features, setFeatures] = useState<Artist[]>([]);
   const [opened, setOpened] = useState<boolean>(false);
 
@@ -65,9 +68,10 @@ export default function Track({
     return title;
   }
 
-  function selectNewArtist(id: string): void {
+  function selectNewArtist(id: string, name: string): void {
     setCurrentArtistId(id);
     closeSheet();
+    setSeenArtists((artists) => [...artists, { id: id, name: name }]);
   }
 
   function getFeatures(): string {
@@ -131,22 +135,37 @@ export default function Track({
             another one of their albums.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {features.map((feature) => (
             <div
               key={feature.id}
-              className="flex flex-col justify-start items-start gap-1 cursor-pointer"
-              onClick={() => selectNewArtist(feature.id)}
+              className="flex flex-col justify-start items-start gap-1 "
             >
-              <AspectRatio ratio={1 / 1}>
-                <Image
-                  className="rounded-md"
-                  src={feature.images[0]?.url}
-                  alt={feature.name}
-                  fill
-                />
-              </AspectRatio>
-              <p className="text-sm">{feature.name}</p>
+              <div className="group relative w-[100%] h-[100%]">
+                <Button
+                  onClick={() => selectNewArtist(feature.id, feature.name)}
+                  className="group-hover:opacity-100 opacity-0 transition-all duration-200 absolute z-20 right-[50%] bottom-[50%] translate-x-[50%] translate-y-[50%]"
+                >
+                  Try
+                </Button>
+                <AspectRatio ratio={1 / 1}>
+                  <Image
+                    className="rounded-md group-hover:brightness-50 transition-all duration-200"
+                    src={feature.images[0]?.url}
+                    alt={feature.name}
+                    fill
+                  />
+                </AspectRatio>
+              </div>
+              <div className="flex justify-start items-center gap-2 mt-1">
+                <p className="text-md">{feature.name}</p>
+                {seenArtists.some((artist) => artist.id === feature.id) && (
+                  <>
+                    <Separator className="bg-white" orientation="vertical" />
+                    <Badge>Tried</Badge>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>

@@ -77,7 +77,7 @@ export default function Album({
               <p>{`Release: ${release_date.slice(0, 4)}`}</p>
               <Separator className="bg-white" orientation="vertical" />
               <p>{`Tracks: ${total_tracks}`}</p>
-              {seenAlbums.map((seen) => seen.id).includes(id) && (
+              {seenAlbums.some((album) => album.id === id) && (
                 <>
                   <Separator className="bg-white" orientation="vertical" />
                   <Badge className="bg-zinc-200 text-black hover:bg-zinc-200 hover:text-black">
