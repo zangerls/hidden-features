@@ -6,6 +6,7 @@ import { albumsDataSchema } from "@/schemas/spotify";
 import { Album as AlbumType, Artist } from "@/types/spotify";
 import { useContext, useEffect, useState } from "react";
 import Album from "./album/Album";
+import { Input } from "./ui/input";
 
 type Thing = {
   initialArtist: Artist;
@@ -21,6 +22,7 @@ export default function Thing({ initialArtist, goalArtist }: Thing) {
   );
   const [albums, setAlbums] = useState<AlbumType[]>([]);
   const [won, setWon] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     setWon(currentArtistId === goalArtist.id);
@@ -40,6 +42,11 @@ export default function Thing({ initialArtist, goalArtist }: Thing) {
       default:
         return false;
     }
+  }
+
+  function searchForWork(album: AlbumType): album is AlbumType {
+    if (!search) return true;
+    return album.name.includes(search);
   }
 
   useEffect(() => {
@@ -81,8 +88,12 @@ export default function Thing({ initialArtist, goalArtist }: Thing) {
             </TabsContent>
             <TabsContent value="hard">Only albums</TabsContent>
           </Tabs>
-          <div className="grid grid-cols-6 gap-4">
-            {albums.filter(adjustDifficulty).map((album) => (
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.currentTarget.value)}
+          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-6 gap-4">
+            {albums.filter(adjustDifficulty).filter(searchForWork).map((album) => (
               <Album
                 key={album.id}
                 {...album}
