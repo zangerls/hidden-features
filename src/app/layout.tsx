@@ -1,4 +1,5 @@
 import GameProvider from "@/hooks/GameContext";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
@@ -18,7 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={poppins.className}>
-        <GameProvider>{children}</GameProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <GameProvider>{children}</GameProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
