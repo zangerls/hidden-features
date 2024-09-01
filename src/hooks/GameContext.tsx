@@ -1,5 +1,6 @@
 "use client";
 
+import { GameDifficulty } from "@/types/main";
 import { SimplifiedAlbum, SimplifiedArtist } from "@/types/spotify";
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 
@@ -8,6 +9,8 @@ type GameContext = {
   setSeenArtists: Dispatch<SetStateAction<SimplifiedArtist[]>>;
   seenAlbums: SimplifiedAlbum[];
   setSeenAlbums: Dispatch<SetStateAction<SimplifiedAlbum[]>>;
+  difficulty: GameDifficulty;
+  setDifficulty: Dispatch<SetStateAction<GameDifficulty>>;
 };
 
 export const GameContext = createContext<GameContext>({
@@ -15,6 +18,8 @@ export const GameContext = createContext<GameContext>({
   setSeenArtists: () => undefined,
   seenAlbums: [],
   setSeenAlbums: () => undefined,
+  difficulty: "easy",
+  setDifficulty: () => undefined,
 });
 
 type GameProvider = {
@@ -24,6 +29,7 @@ type GameProvider = {
 export default function GameProvider({ children }: GameProvider) {
   const [seenArtists, setSeenArtists] = useState<SimplifiedArtist[]>([]);
   const [seenAlbums, setSeenAlbums] = useState<SimplifiedAlbum[]>([]);
+  const [difficulty, setDifficulty] = useState<GameDifficulty>("easy");
 
   return (
     <GameContext.Provider
@@ -32,6 +38,8 @@ export default function GameProvider({ children }: GameProvider) {
         setSeenArtists: setSeenArtists,
         seenAlbums: seenAlbums,
         setSeenAlbums: setSeenAlbums,
+        difficulty: difficulty,
+        setDifficulty: setDifficulty,
       }}
     >
       {children}

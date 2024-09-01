@@ -31,6 +31,12 @@ export const albumSchema = z.object({
     z.literal("single"),
     z.literal("compilation"),
   ]),
+  album_group: z.union([
+    z.literal("album"),
+    z.literal("single"),
+    z.literal("compilation"),
+    z.literal("appears_on"),
+  ]),
   total_tracks: z.number().int().nonnegative(),
   images: z.array(imageSchema),
   release_date: z.string(),
@@ -63,6 +69,7 @@ export const trackSchema = z.object({
   artists: z.array(simplifiedArtistSchema),
   duration_ms: z.number().int().nonnegative(),
   track_number: z.number().int().nonnegative(),
+  explicit: z.boolean(),
 });
 
 export const tracksDataSchema = z.object({
