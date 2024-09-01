@@ -6,8 +6,8 @@ import "./globals.css";
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
 export const metadata: Metadata = {
-  title: "Title",
-  description: "Description",
+  title: "Hidden Features",
+  description: "Test your music knowledge",
 };
 
 export default function RootLayout({
