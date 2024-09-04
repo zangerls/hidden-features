@@ -84,7 +84,7 @@ export default function Thing({ initialArtist, goalArtist }: Thing) {
               Albums, singles and work they appear on
             </TabsContent>
             <TabsContent value="moderate">
-              The artist's albums and singles
+              {`The artist's albums and singles`}
             </TabsContent>
             <TabsContent value="hard">Only albums</TabsContent>
           </Tabs>
@@ -93,14 +93,17 @@ export default function Thing({ initialArtist, goalArtist }: Thing) {
             onChange={(e) => setSearch(e.currentTarget.value)}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-6 gap-4">
-            {albums.filter(adjustDifficulty).filter(searchForWork).map((album) => (
-              <Album
-                key={album.id}
-                {...album}
-                currentArtistId={currentArtistId}
-                setCurrentArtistId={setCurrentArtistId}
-              />
-            ))}
+            {albums
+              .filter(adjustDifficulty)
+              .filter(searchForWork)
+              .map((album) => (
+                <Album
+                  key={album.id}
+                  {...album}
+                  currentArtistId={currentArtistId}
+                  setCurrentArtistId={setCurrentArtistId}
+                />
+              ))}
           </div>
         </>
       ) : (
