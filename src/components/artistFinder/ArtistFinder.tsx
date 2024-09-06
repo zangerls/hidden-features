@@ -1,9 +1,8 @@
 import { artistsDataSchema } from "@/schemas/spotify";
 import { Artist } from "@/types/spotify";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { z } from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -38,18 +37,30 @@ export default function ArtistFinder({
   const [artists, setArtists] = useState<Artist[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function handleSearch(): Promise<void> {
-    try {
+  useEffect(() => {
+    async function getResults() {
+      if (!artistInput.trim().length) {
+        setArtists([]);
+        setLoading(false);
+        return;
+      }
       setLoading(true);
-      setArtistID(undefined);
-      const artists = await getArtists();
-      setArtists(artists);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
+
+      try {
+        const data = await getArtists();
+        setArtists(data);
+      } catch (e) {
+        console.error(e);
+        setArtists([]);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
+
+    const debounceTimer = setTimeout(getResults, 1000);
+
+    return () => clearTimeout(debounceTimer);
+  }, [artistInput]);
 
   async function getArtists(): Promise<Artist[]> {
     const res = await fetch(
@@ -63,7 +74,7 @@ export default function ArtistFinder({
   }
 
   return (
-    <>
+    <div className="border-red-500 border-2 flex flex-col gap-2">
       <div className="grid w-full max-w-sm items-center gap-1.5">
         {input?.label && <Label>{input.label}</Label>}
         <div className="flex w-full max-w-sm items-center space-x-2">
@@ -72,49 +83,46 @@ export default function ArtistFinder({
             onChange={(e) => setArtistInput(e.currentTarget.value)}
             placeholder={input?.placeholder}
           />
-          <Button
-            disabled={!artistInput}
-            aria-disabled={!artistInput}
-            onClick={handleSearch}
-          >
-            Search
-          </Button>
         </div>
       </div>
 
-      {select?.label && <Label>{select.label}</Label>}
-      <Select
-        value={artistID}
-        disabled={!artists.length}
-        onValueChange={(val) => setArtistID(val)}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder={select?.placeholder} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            {artists.map((artist) => (
-              <SelectItem key={artist.id} value={artist.id}>
-                <div className="flex justify-start items-center gap-x-4 h-max">
-                  <Avatar>
-                    <AvatarImage
-                      src={artist.images[0]?.url}
-                      alt={artist.name}
-                    />
-                    <AvatarFallback>{artist.name.slice(0, 2)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col ">
-                    <p className="text-base">{artist.name}</p>
-                    <p className="text-xs text-zinc-500">
-                      {`${artist.followers.total.toLocaleString()} followers`}
-                    </p>
+      <div>
+        {select?.label && <Label>{select.label}</Label>}
+        <Select
+          value={artistID}
+          disabled={!artists.length}
+          onValueChange={(val) => setArtistID(val)}
+        >
+          <SelectTrigger className="h-[54px]">
+            <SelectValue
+              placeholder={loading ? "Loading..." : select?.placeholder}
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {artists.map((artist) => (
+                <SelectItem key={artist.id} value={artist.id}>
+                  <div className="flex justify-start items-center gap-x-4 h-max">
+                    <Avatar>
+                      <AvatarImage
+                        src={artist.images[0]?.url}
+                        alt={artist.name}
+                      />
+                      <AvatarFallback>{artist.name.slice(0, 2)}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col ">
+                      <p className="text-base">{artist.name}</p>
+                      <p className="text-xs text-zinc-500">
+                        {`${artist.followers.total.toLocaleString()} followers`}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-    </>
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
   );
 }
