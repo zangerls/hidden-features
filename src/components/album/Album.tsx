@@ -67,12 +67,16 @@ export default function Album({
     setOpened(false);
   }
 
+  function removeFeatures(title: string): string {
+    return title.replace(/[\(\[]\s*feat[^\)\]]*[\)\]]/gi, "[REDACTED]");
+  }
+
   return (
     <>
       <Sheet open={opened}>
         <div className="group relative">
           <div className="group-hover:opacity-100 opacity-0 transition-all duration-200 p-4 w-[100%] h-[100%] text-center text-white flex flex-col justify-center items-center absolute z-50 right-[50%] bottom-[50%] translate-x-[50%] translate-y-[50%]">
-            <p className="font-semibold">{name}</p>
+            <p className="font-semibold">{removeFeatures(name)}</p>
             <div className="flex justify-center gap-2 text-sm mt-1">
               <p>{`Release: ${release_date.slice(0, 4)}`}</p>
               <Separator className="bg-white" orientation="vertical" />
@@ -98,7 +102,7 @@ export default function Album({
           <AspectRatio ratio={1 / 1}>
             <Image
               src={images[0]?.url}
-              alt={`Album cover (${name})`}
+              alt={`Album cover (${removeFeatures(name)})`}
               fill
               className="group-hover:brightness-50 transition-all duration-200"
             />
